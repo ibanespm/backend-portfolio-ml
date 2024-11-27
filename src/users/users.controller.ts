@@ -1,34 +1,74 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
+  /**
+   * Retrieve all users (Admin only)
+   * @returns List of users
+   */
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll() {
+    const findAllUsers = await this.usersService.findAll();
+    return findAllUsers; // Devuelve la lista de usuarios sin el campo 'password'
   }
 
+  /**
+   * Retrieve a user by ID
+   * @param id User ID
+   * @returns User details
+   */
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  findOne(@Param('id') _id: string) {
+    return this.usersService.findById(_id);
   }
 
+  /**
+   * Update user details
+   * @param id User ID
+   * @param updateUserDto
+   * @returns Updated user
+   */
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+    return this.usersService.update(id, updateUserDto);
   }
 
+  /**
+   * Change user password
+   * @param id User ID
+   * @param password New password
+   * @returns Updated user with hashed password
+   */
+  @Patch(':id/password')
+  updatePassword(@Param('id') id: string, @Body('password') password: string) {
+    return this.usersService.updatePassword(id, password);
+  }
+
+  /**
+   * Update user status (Admin only)
+   * @param id User ID
+   * @param status New status
+   * @returns Updated user status
+   */
+  @Patch(':id/status')
+  updateStatus(
+    @Param('id') id: string,
+    @Body('status') status: 'active' | 'inactive',
+  ) {
+    return this.usersService.updateStatus(id, status);
+  }
+
+  /**
+   * Delete a user by ID (Admin only)
+   * @param id User ID
+   * @returns Deleted user
+   */
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.remove(id);
   }
 }
