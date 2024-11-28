@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { CommonModule } from './common/common.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { NetworksModule } from './networks/networks.module';
 import { AdviceModule } from './advice/advice.module';
 import { ProjectsModule } from './projects/projects.module';
 import { SearchModule } from './search/search.module';
@@ -20,7 +19,6 @@ dotenv.config();
     CommonModule,
     UsersModule,
     AuthModule,
-    NetworksModule,
     AdviceModule,
     ProjectsModule,
     SearchModule,

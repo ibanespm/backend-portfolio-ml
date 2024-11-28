@@ -49,20 +49,6 @@ export class UsersController {
   }
 
   /**
-   * Update user status (Admin only)
-   * @param id User ID
-   * @param status New status
-   * @returns Updated user status
-   */
-  @Patch(':id/status')
-  updateStatus(
-    @Param('id') id: string,
-    @Body('status') status: 'active' | 'inactive',
-  ) {
-    return this.usersService.updateStatus(id, status);
-  }
-
-  /**
    * Delete a user by ID (Admin only)
    * @param id User ID
    * @returns Deleted user

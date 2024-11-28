@@ -28,21 +28,43 @@ export class UsersService {
     }
 
     // Realiza la consulta si el id es válido
-    const user = await this.userModel.findById(id).exec();
+    const userFind = await this.userModel.findById(id).exec();
 
     // Si no se encuentra el usuario, lanza una excepción de "No encontrado"
-    if (!user) {
+    if (!userFind) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    return user;
+    return userFind;
   }
 
   // Update user details
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    return this.userModel
-      .findByIdAndUpdate(id, updateUserDto, { new: true })
-      .exec();
+    try {
+      // Check if the ID is valid
+      if (!Types.ObjectId.isValid(id)) {
+        throw new BadRequestException('Invalid ObjectId');
+      }
+
+      // Update user in the database
+      const updatedUser = await this.userModel
+        .findByIdAndUpdate(id, updateUserDto, { new: true })
+        .select('-password') // Exclude password from the response
+        .exec();
+
+      // Throw an exception if the user does not exist
+      if (!updatedUser) {
+        throw new NotFoundException(`User with id ${id} not found`);
+      }
+
+      return updatedUser;
+    } catch (error) {
+      // Handle unexpected errors
+      if (error.name === 'CastError') {
+        throw new BadRequestException('Invalid ObjectId');
+      }
+      throw error;
+    }
   }
 
   // Change user password
@@ -53,23 +75,16 @@ export class UsersService {
       .exec();
   }
 
-  // Update user status
-  async updateStatus(id: string, status: 'active' | 'inactive'): Promise<User> {
-    return this.userModel
-      .findByIdAndUpdate(id, { status }, { new: true })
-      .exec();
-  }
-
   async remove(id: string): Promise<{ message: string; status: number }> {
-    // Buscar y eliminar el usuario
+    // search and deleted user
     const userDeleted = await this.userModel.findByIdAndDelete(id).exec();
 
-    // Si no se encuentra el usuario, lanzar una excepción
+    // verify if user exists and lauch exception
     if (!userDeleted) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
-    // Responder con un mensaje y un código de estado
+    // Response the user deleted and status
     return {
       message: 'User deleted successfully',
       status: HttpStatus.OK,

@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_container
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      GLIBC_TUNABLES: "glibc.pthread.rseq=0"  # Soluciona la advertencia de rseq
+      TZ: "America/Lima"  # Configura la zona horaria a Lima
+
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    ulimits:
+      memlock: -1  # Deshabilita el bloqueo de memoria
+    deploy:
+      resources:
+        limits:
+          memory: 1G  # Ajusta según tus necesidades
+    command: ["--wiredTigerCacheSizeGB=${MONGO_WIREDTIGER_CACHE_SIZE}"]  # Ajusta según tu RAM disponible
+
+  mongo-express:
+    image: mongo-express:latest # Web-based MongoDB admin tool
+    container_name: mongo_express_container
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${ME_CONFIG_MONGODB_ADMINUSERNAME} # Matches MongoDB username
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${ME_CONFIG_MONGODB_ADMINPASSWORD} # Matches MongoDB password
+      ME_CONFIG_MONGODB_SERVER: ${ME_CONFIG_MONGODB_SERVER} # MongoDB service name
+      TZ: "America/Lima"  # Configura la zona horaria a Lima
+
+    ports:
+      - "8081:8081" # Expose Mongo Express on localhost:8081
+
+volumes:
+  mongodb_data:

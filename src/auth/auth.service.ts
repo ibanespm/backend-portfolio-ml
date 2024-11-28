@@ -23,7 +23,7 @@ export class AuthService {
   async register(userObject: RegisterAuthDto) {
     const { password, email, role } = userObject;
 
-    // Verificar si el email ya existe en la base de datos
+    // Verify is email not existing on database
     const userExist = await this.userModel.findOne({ email });
     if (userExist) {
       throw new HttpException('EMAIL_ALREADY_EXISTS', HttpStatus.CONFLICT);

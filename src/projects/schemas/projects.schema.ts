@@ -6,8 +6,8 @@ export type ProjectDocument = Project & Document;
 
 @Schema({ timestamps: true })
 export class Project {
-  @Prop({ required: true })
-  title: string;
+  @Prop({ required: true, unique: true })
+  name: string;
 
   @Prop({ required: true })
   description: string;
@@ -25,7 +25,10 @@ export class Project {
   owner: User;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }], default: [] })
-  comments: Types.ObjectId[]; // Array of comment references
+  comments: Types.ObjectId[];
+
+  @Prop({ type: [String], default: [] })
+  tags: string[];
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);
