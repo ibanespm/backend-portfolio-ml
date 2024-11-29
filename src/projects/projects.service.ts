@@ -75,13 +75,24 @@ export class ProjectsService {
     return updatedProject;
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    // Verifica si el id tiene un formato válido de ObjectId
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid ID format');
+    }
+
     const projectDeleted = await this.projectModel.findByIdAndDelete(id);
 
-    if (!projectDeleted){
-      throw new NotFoundException(`Project not foud, not deleted`)
+    if (!projectDeleted) {
+      return {
+        message: 'Project not found, not deleted',
+        status: HttpStatus.NOT_FOUND,
+      };
     }
+
+    return {
+      message: 'Project is deleted successfully',
+      status: HttpStatus.OK,
+    };
   }
 }
-// async findAll(): Promise<User[]> {
-//   return this.userModel.find().exec();
