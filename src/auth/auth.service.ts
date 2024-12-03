@@ -7,7 +7,9 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+
 import { hash, compare } from 'bcrypt';
+
 import { JwtService } from '@nestjs/jwt';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { User, UserDocument } from '../users/schemas/users.schema';
@@ -34,12 +36,11 @@ export class AuthService {
     }
 
     const hashedPassword = await hash(password, 10);
+    console.log('HOla como estas');
 
     const userToCreate = { ...userObject, password: hashedPassword };
 
     const user = await this.userModel.create(userToCreate);
-
-    user.password = undefined;
 
     return user;
   }
@@ -48,7 +49,8 @@ export class AuthService {
   async login(@Body() userObjectLogin: LoginAuthDto) {
     const { email, password } = userObjectLogin;
 
-    const userFind = await this.userModel.findOne({ email: email });
+    const userFind = await this.userModel.findOne({ email });
+    console.log(userFind);
 
     if (!userFind)
       throw new HttpException('USER_NOT_FOUND', HttpStatus.NOT_FOUND);
@@ -57,20 +59,20 @@ export class AuthService {
 
     if (!checkPassword) throw new HttpException('PASSWORD_NOT_MATCH', 401);
 
-    return userFind;
+    userFind.password = undefined;
 
     //payload
-    // const payload = {
-    //   sub: userFind._id,
-    //   email: userFind.email,
-    //   name: userFind.name,
-    // };
+    const payload = {
+      sub: userFind._id,
+      email: userFind.email,
+      name: userFind.name,
+    };
 
-    // //jwt
-    // const jwtToken = await this.jwtService.signAsync(payload);
+    //jwt
+    const jwtToken = await this.jwtService.signAsync(payload);
 
-    // const data = { access_token: jwtToken, user: userFind };
+    const data = { access_token: jwtToken, user: userFind };
 
-    // return data;
+    return data;
   }
 }

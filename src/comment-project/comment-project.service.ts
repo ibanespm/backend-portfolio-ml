@@ -1,36 +1,59 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateCommentDto } from './dto/create-comment-project.dto';
-import { Comment, CommentDocument } from './schemas/comment-project.schema';
 import { UpdateCommentDto } from './dto/update-comment-project.dto';
-
+import { Project, ProjectDocument } from 'src/projects/schemas/projects.schema';
+import { UserDocument } from '../../dist/users/schemas/users.schema';
+import { User } from 'src/users/schemas/users.schema';
+import { CommentDocument } from '../../dist/comment-project/schemas/comment-project.schema';
 @Injectable()
 export class CommentProjectService {
   constructor(
     @InjectModel('CommentProject')
     private readonly commentModel: Model<CommentDocument>,
+    @InjectModel(Project.name)
+    private readonly projectModel: Model<ProjectDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>, // Inyecta UserModel
   ) {}
 
-  async create(createCommentDto: CreateCommentDto): Promise<Comment> {
-    try {
-      // Crear una nueva instancia del modelo con los datos proporcionados
-      const newComment = new this.commentModel(createCommentDto);
+  async create(createCommentDto: CreateCommentDto): Promise<CommentDocument> {
+    const { user, project, parentCommentId, text } = createCommentDto;
 
-      // Guardar el nuevo comentario en la base de datos
-      return await newComment.save();
-    } catch (error) {
-      // Si ocurre un error, lanzar una excepción HTTP con el mensaje adecuado
-      throw new HttpException(
-        {
-          status: HttpStatus.BAD_REQUEST,
-          message:
-            'No se pudo guardar el comentario. Verifica los datos enviados.',
-          error: error.message,
-        },
-        HttpStatus.BAD_REQUEST,
-      );
+    // Verifica que el usuario existe
+    const userExists = await this.userModel.findById(user).exec();
+    if (!userExists) {
+      throw new Error(`El usuario con ID ${user} no existe.`);
     }
+
+    // Verifica que el proyecto existe
+    const projectExists = await this.projectModel.findById(project).exec();
+    if (!projectExists) {
+      throw new Error(`El proyecto con ID ${project} no existe.`);
+    }
+
+    // Si es una respuesta, verifica que el comentario principal exista
+    if (parentCommentId) {
+      const parentCommentExists = await this.commentModel
+        .findById(parentCommentId)
+        .exec();
+      if (!parentCommentExists) {
+        throw new Error(
+          `El comentario principal con ID ${parentCommentId} no existe.`,
+        );
+      }
+    }
+
+    // Crea el nuevo comentario
+    const newComment = new this.commentModel({
+      user,
+      project,
+      text,
+      parentCommentId: parentCommentId || null, // Guarda null si no es una respuesta
+      likes: 0,
+    });
+
+    return newComment.save();
   }
 
   // Método para obtener todos los comentarios (deberías implementar la lógica de búsqueda)

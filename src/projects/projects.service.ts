@@ -17,7 +17,7 @@ export class ProjectsService {
     @InjectModel(Project.name) private projectModel: Model<ProjectDocument>,
   ) {}
   async create(createProjectDto: CreateProjectDto): Promise<Project> {
-    const { name, owner } = createProjectDto;
+    const { name } = createProjectDto;
 
     // Verificar si ya existe un proyecto con el mismo nombre
     const projectExists = await this.projectModel.findOne({ name }).exec();

@@ -18,6 +18,9 @@ export class Comment {
 
   @Prop({ default: 0 })
   likes: number; // Cantidad de "likes" en el comentario
+
+  @Prop({ type: Types.ObjectId, ref: 'Comment', default: null })
+  parentComment: Comment | null; // Referencia al comentario padre (si es una respuesta)
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

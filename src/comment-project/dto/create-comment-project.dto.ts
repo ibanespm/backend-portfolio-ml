@@ -9,21 +9,25 @@ import {
 } from 'class-validator';
 
 export class CreateCommentDto {
-  @IsNotEmpty() //sure not empty string
-  @IsString() // sure is string
-  @MinLength(1) // min length
-  @MaxLength(500) // max length
-  text: string;
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(500)
+  text: string; // Texto del comentario
 
-  @IsNotEmpty() //sure not empty
-  @IsMongoId() // Valida que sea un ID válido de MongoDB
+  @IsNotEmpty()
+  @IsMongoId()
   user: string; // ID del usuario que crea el comentario
 
-  @IsNotEmpty() // Asegura que no esté vacío
-  @IsMongoId() // Valida que sea un ID válido de MongoDB
+  @IsNotEmpty()
+  @IsMongoId()
   project: string; // ID del proyecto asociado al comentario
 
-  @IsOptional() // Campo opcional
-  @IsNumber() // Valida que sea un número
+  @IsOptional()
+  @IsNumber()
   likes?: number; // Cantidad inicial de "likes" (por defecto sería 0)
+
+  @IsOptional()
+  @IsMongoId()
+  parentComment?: string; // ID del comentario "padre" (si es una respuesta)
 }

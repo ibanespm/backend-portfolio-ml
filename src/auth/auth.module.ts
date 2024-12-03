@@ -6,6 +6,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './jwt.constant';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/users/schemas/users.schema';
+import { PassportModule } from '@nestjs/passport'; // Asegúrate de importar PassportModule
+import { JwtStrategy } from './auth.strategy';
 
 @Module({
   imports: [
@@ -21,8 +23,9 @@ import { User, UserSchema } from 'src/users/schemas/users.schema';
       signOptions: { expiresIn: '60h' },
     }),
     UsersModule,
+    PassportModule, // Importar PassportModule para la autenticación
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy], // Registrar JwtStrategy aquí
 })
 export class AuthModule {}
