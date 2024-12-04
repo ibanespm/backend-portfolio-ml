@@ -1,31 +1,26 @@
 import {
-  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
-  MaxLength,
+  IsUrl,
+  MinLength,
 } from 'class-validator';
 
 export class CreateContentDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(100)
-  name: string;
-
-  @IsEnum(['article', 'video'])
-  @IsNotEmpty()
-  type: 'article' | 'video';
+  @MinLength(2)
+  title: string; // Título del contenido
 
   @IsString()
-  @IsNotEmpty()
-  @MaxLength(300)
-  description: string;
+  type: string; // Tipo de contenido (video, artículo, dataset)
 
+  @IsUrl()
+  @IsNotEmpty() // URL should be provided by the user
+  @MinLength(10) // Minimum length for URL to be considered valid
+  url: string; // URL del contenido (de YouTube, Medium, Kaggle)
+
+  @IsOptional()
   @IsString()
-  @IsOptional()
-  url?: string; // Optional, as some articles may not have URLs
-
-  @IsString({ each: true }) // Ensures every tag in the array is a string
-  @IsOptional()
-  tags?: string[];
+  description?: string; // Descripción opcional del contenido
 }
