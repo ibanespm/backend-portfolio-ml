@@ -9,7 +9,7 @@ import { ProjectsModule } from './projects/projects.module';
 import { SearchModule } from './search/search.module';
 import { ContentModule } from './content/content.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CommentProjectModule } from './comment-project/comment-project.module';
+import { CommentProjectModule } from './comment-project/comment_project.module';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
