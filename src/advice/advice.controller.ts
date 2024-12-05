@@ -27,16 +27,16 @@ export class AdviceController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.adviceService.findOne(+id);
+    return this.adviceService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAdviceDto: UpdateAdviceDto) {
-    return this.adviceService.update(+id, updateAdviceDto);
+    return this.adviceService.update(id, updateAdviceDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.adviceService.remove(+id);
+    return this.adviceService.remove(id);
   }
 }

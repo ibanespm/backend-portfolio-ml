@@ -23,3 +23,7 @@ export class Advice {
 }
 
 export const AdviceSchema = SchemaFactory.createForClass(Advice);
+AdviceSchema.index(
+  { topic: 1, description: 1, requester: 1 },
+  { unique: true },
+);
