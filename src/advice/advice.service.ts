@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, HttpStatus } from '@nestjs/common';
 import { CreateAdviceDto } from './dto/create-advice.dto';
 import { UpdateAdviceDto } from './dto/update-advice.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -64,12 +64,18 @@ export class AdviceService {
       throw new BadRequestException(err.message);
     }
   }
-  //this method will remove a advice
-  remove(id: string): Promise<Advice> {
-    try {
-      return this.adviceModel.findByIdAndDelete(id).exec();
-    } catch (err) {
-      throw new BadRequestException(err.message);
+  //this method will remove a advice adn return message is ok deleted
+  async remove(id: string): Promise<{ message: string; status: number }> {
+    //check if the ID is valid
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid ObjectId');
     }
+    //remove the advice in the database
+    const deletedAdvice = await this.adviceModel.findByIdAndDelete(id).exec();
+    //throw an exception if the advice does not exist
+    if (!deletedAdvice) {
+      throw new BadRequestException(`Advice with id ${id} not found`);
+    }
+    return { message: 'Advice deleted successfully', status: HttpStatus.OK };
   }
 }
