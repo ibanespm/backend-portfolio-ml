@@ -23,4 +23,7 @@ export class CreateContentDto {
   @IsOptional()
   @IsString()
   description?: string; // Descripción opcional del contenido
+
+  @IsString()
+  category?:string;
 }

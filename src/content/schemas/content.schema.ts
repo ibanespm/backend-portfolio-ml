@@ -2,22 +2,26 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 export type ContentDocument = Content & Document;
+
 @Schema({ timestamps: true })
 export class Content {
   @Prop({ required: true })
-  title: string; // Título del contenido
+  title: string;
 
   @Prop({ required: true })
-  type: string; // Tipo de contenido (video, artículo, dataset)
+  type: string;
 
   @Prop({ required: true })
-  url: string; // URL del contenido (en YouTube, Medium, Kaggle)
+  url: string;
 
   @Prop({ default: '' })
-  description: string; // Descripción opcional del contenido
+  description: string;
 
   @Prop({ default: 0 })
-  likes: number; // Likes o valoraciones en el contenido
+  likes: number;
+
+  @Prop({ required: false, default: 'General' })
+  category: string;
 }
 
 export const ContentSchema = SchemaFactory.createForClass(Content);

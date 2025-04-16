@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { CreateContentDto } from './dto/create-content.dto';
-import { UpdateContentDto } from './dto/update-content.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+
+
 import { Content, ContentDocument } from './schemas/content.schema';
+import { CreateContentDto } from './dto/create-content.dto';
+import { UpdateContentDto } from './dto/update-content.dto';
+import { FilterContentDto } from './dto/get-filter-content.dto';
 
 @Injectable()
 export class ContentService {
@@ -19,9 +22,20 @@ export class ContentService {
   }
 
   // Obtener todos los contenidos
-  async findAll(): Promise<Content[]> {
-    return this.contentModel.find().exec();
+  //async findAll(): Promise<Content[]> {
+  //  return this.contentModel.find().exec();
+  //}
+
+  //get 
+  async findWithFilter(filters: FilterContentDto): Promise<Content[]> {
+    const query: any = {};
+  
+    if (filters.type) query.type = filters.type;
+    if (filters.category) query.category = filters.category;
+  
+    return this.contentModel.find(query).exec();
   }
+  
 
   // Obtener un contenido por su ID
   async findOne(id: string): Promise<Content> {

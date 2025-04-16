@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ContentService } from './content.service';
 import { CreateContentDto } from './dto/create-content.dto';
 import { UpdateContentDto } from './dto/update-content.dto';
+import { FilterContentDto } from './dto/get-filter-content.dto';
 
 @Controller('content')
 export class ContentController {
@@ -20,14 +22,18 @@ export class ContentController {
     return this.contentService.create(createContentDto);
   }
 
-  @Get()
-  findAll() {
-    return this.contentService.findAll();
-  }
+ // @Get()
+ // findAll() {
+ //   return this.contentService.findAll();
+ // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.contentService.findOne(id);
+  }
+  @Get()
+  findfilter(@Query() filters: FilterContentDto) {
+    return this.contentService.findWithFilter(filters);
   }
 
   @Patch(':id')

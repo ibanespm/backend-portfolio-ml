@@ -1,3 +1,4 @@
+import { CreateUserDto } from './dto/create-user.dto';
 import {
   BadRequestException,
   HttpStatus,
@@ -19,23 +20,31 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
-  // Retrieve a user by ID
 
+  // Retrieve a user by ID
   async findById(id: string): Promise<User> {
     // Verifica si el id es un ObjectId válido
     if (!Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Invalid ObjectId format');
     }
-
     // Realiza la consulta si el id es válido
     const userFind = await this.userModel.findById(id).exec();
-
     // Si no se encuentra el usuario, lanza una excepción de "No encontrado"
     if (!userFind) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-
     return userFind;
+  }
+
+  // Create a new user
+  async create(CreateUserDto: CreateUserDto): Promise<User> {
+    // Hash the password before saving the user
+    const hashedPassword = await bcrypt.hash(CreateUserDto.password, 10);
+    const newUser = new this.userModel({
+      ...CreateUserDto,
+      password: hashedPassword,
+    });
+    return newUser.save();
   }
 
   // Update user details
@@ -45,18 +54,15 @@ export class UsersService {
       if (!Types.ObjectId.isValid(id)) {
         throw new BadRequestException('Invalid ObjectId');
       }
-
       // Update user in the database
       const updatedUser = await this.userModel
         .findByIdAndUpdate(id, updateUserDto, { new: true })
         .select('-password') // Exclude password from the response
         .exec();
-
       // Throw an exception if the user does not exist
       if (!updatedUser) {
         throw new NotFoundException(`User with id ${id} not found`);
       }
-
       return updatedUser;
     } catch (error) {
       // Handle unexpected errors

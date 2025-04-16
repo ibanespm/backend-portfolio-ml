@@ -1,41 +1,32 @@
 version: '3.8'
 
 services:
-  mongodb:
+  mongo:
     image: mongo:latest
-    container_name: mongodb_container
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
-      GLIBC_TUNABLES: "glibc.pthread.rseq=0"  # Soluciona la advertencia de rseq
-      TZ: "America/Lima"  # Configura la zona horaria a Lima
-
+    container_name: mongo-db
     ports:
-      - "27017:27017"
+      - "27017:27017"  # Exponemos el puerto de MongoDB a la máquina local
     volumes:
-      - mongodb_data:/data/db
-    ulimits:
-      memlock: -1  # Deshabilita el bloqueo de memoria
-    deploy:
-      resources:
-        limits:
-          memory: 1G  # Ajusta según tus necesidades
-    command: ["--wiredTigerCacheSizeGB=${MONGO_WIREDTIGER_CACHE_SIZE}"]  # Ajusta según tu RAM disponible
+      - mongo-data:/data/db
+    networks:
+      - backend
 
   mongo-express:
-    image: mongo-express:latest # Web-based MongoDB admin tool
-    container_name: mongo_express_container
-    restart: always
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${ME_CONFIG_MONGODB_ADMINUSERNAME} # Matches MongoDB username
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${ME_CONFIG_MONGODB_ADMINPASSWORD} # Matches MongoDB password
-      ME_CONFIG_MONGODB_SERVER: ${ME_CONFIG_MONGODB_SERVER} # MongoDB service name
-      TZ: "America/Lima"  # Configura la zona horaria a Lima
-
+    image: mongo-express:latest
+    container_name: mongo-express
     ports:
-      - "8081:8081" # Expose Mongo Express on localhost:8081
+      - "8081:8081"  # Exponemos Mongo Express en el puerto 8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin
+    networks:
+      - backend
 
 volumes:
-  mongodb_data:
+  mongo-data:
+
+networks:
+  backend:
+    driver: bridge

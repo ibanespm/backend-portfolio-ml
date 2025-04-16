@@ -15,7 +15,9 @@ async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
-  );
+  )
+
+  //route global /api/
 
   // Habilitar la validación global de DTOs
   app.useGlobalPipes(
