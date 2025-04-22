@@ -14,7 +14,7 @@ import {
   LikeCommentDto,
   UpdateCommentDto,
 } from './dto/update_comment_project.dto';
-import { JwtAuthGuard } from 'src/auth/auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
 import { UserDecorator } from './decorators/user.decorators';
 // import { UpdateCommentDto } from './dto/update-comment-project.dto';
 

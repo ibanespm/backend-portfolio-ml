@@ -16,8 +16,13 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   )
+  app.enableCors({
+    origin: 'http://localhost:8080', // Solo permite este dominio
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Si necesitas cookies/tokens
+  });
 
-  //route global /api/
+  
 
   // Habilitar la validación global de DTOs
   app.useGlobalPipes(
