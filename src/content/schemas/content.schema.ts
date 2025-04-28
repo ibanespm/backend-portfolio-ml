@@ -20,6 +20,9 @@ export class Content {
   @Prop({ default: 0 })
   likes: number;
 
+  @Prop({ required: false, default: [] })
+  tags: string[];
+
   @Prop({ required: false, default: 'General' })
   category: string;
 }

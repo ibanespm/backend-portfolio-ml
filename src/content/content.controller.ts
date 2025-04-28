@@ -22,15 +22,16 @@ export class ContentController {
     return this.contentService.create(createContentDto);
   }
 
- // @Get()
- // findAll() {
- //   return this.contentService.findAll();
- // }
+  // @Get()
+  // findAll() {
+  //   return this.contentService.findAll();
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.contentService.findOne(id);
   }
+
   @Get()
   findfilter(@Query() filters: FilterContentDto) {
     return this.contentService.findWithFilter(filters);
@@ -44,5 +45,15 @@ export class ContentController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.contentService.remove(id);
+  }
+}
+
+@Controller('contentFilters')
+export class ContentFiltersController {
+  constructor(private readonly contentService: ContentService) {}
+
+  @Get()
+  async getFilters() {
+    return this.contentService.getFilters();
   }
 }

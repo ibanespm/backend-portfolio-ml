@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -24,6 +25,11 @@ export class CreateContentDto {
   @IsString()
   description?: string; // Descripción opcional del contenido
 
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[];
+
   @IsString()
-  category?:string;
+  category?: string;
 }

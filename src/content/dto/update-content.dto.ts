@@ -1,4 +1,4 @@
-import { IsString, IsUrl, IsOptional } from 'class-validator';
+import { IsString, IsUrl, IsOptional, IsArray } from 'class-validator';
 
 export class UpdateContentDto {
   @IsOptional()
@@ -12,6 +12,11 @@ export class UpdateContentDto {
   @IsOptional()
   @IsUrl()
   url?: string; // URL del contenido (de YouTube, Medium, Kaggle)
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[]; // Etiquetas opcionales para clasificar el contenido
 
   @IsOptional()
   @IsString()

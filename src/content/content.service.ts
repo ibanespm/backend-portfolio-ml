@@ -24,13 +24,24 @@ export class ContentService {
   //async findAll(): Promise<Content[]> {
   //  return this.contentModel.find().exec();
   //}
+  async getFilters() {
+    const categories = await this.contentModel.distinct('category');
+    const types = await this.contentModel.distinct('type');
+    const tags = await this.contentModel.distinct('tags');
 
-  //get
+    return { categories, types, tags };
+  }
+
   async findWithFilter(filters: FilterContentDto): Promise<Content[]> {
     const query: any = {};
 
     if (filters.type) query.type = filters.type;
     if (filters.category) query.category = filters.category;
+
+    if (filters.tags && filters.tags.length > 0) {
+      // Cambia $in por $all para requerir TODOS los tags
+      query.tags = { $all: filters.tags };
+    }
 
     return this.contentModel.find(query).exec();
   }
