@@ -1,11 +1,12 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { jwtConstants } from './jwt.constant';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private AuthService: AuthService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false, // Ensure expiration is checked, set true to ignore
@@ -15,7 +16,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // The validate method is called after the JWT is verified and decoded.
   // Adjust the 'payload' properties based on how your JWT is structured.
-  async validate(payload: any) {
-    return payload;
+  validate(email: string, password: string) {
+    if (password === '')
+      throw new UnauthorizedException('Please provide a password');
+    return this.AuthService.validateUser(email, password);
   }
 }

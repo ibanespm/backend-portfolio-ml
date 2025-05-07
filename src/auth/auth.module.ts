@@ -11,6 +11,8 @@ import { JwtStrategy } from './guards/auth.strategy';
 import { GoogleStrategy } from './guards/google-oauth.strategy';
 import { ConfigModule } from '@nestjs/config';
 import { JwtAuthGuard } from './guards/auth.guard';
+import googleOauthConfig from './guards/google-oauth.config';
+import { UsersService } from 'src/users/users.service';
 
 @Module({
   imports: [
@@ -23,13 +25,20 @@ import { JwtAuthGuard } from './guards/auth.guard';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60h' },
+      signOptions: jwtConstants.signOptions,
     }),
     UsersModule,
     PassportModule,
     ConfigModule,
+    ConfigModule.forFeature(googleOauthConfig),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, GoogleStrategy, JwtAuthGuard],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    GoogleStrategy,
+    UsersService,
+    JwtAuthGuard,
+  ],
 })
 export class AuthModule {}

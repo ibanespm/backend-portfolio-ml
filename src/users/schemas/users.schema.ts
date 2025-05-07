@@ -11,7 +11,7 @@ export class User {
   @Prop({ required: true, unique: true })
   email: string;
 
-  @Prop({ required: false }) // Opcional para cuentas Google
+  @Prop({ required: false })
   password?: string;
 
   @Prop({ default: 'user', enum: ['admin', 'user'] })

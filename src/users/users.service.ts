@@ -20,7 +20,6 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
-
   // Retrieve a user by ID
   async findById(id: string): Promise<User> {
     // Verifica si el id es un ObjectId válido
@@ -46,7 +45,10 @@ export class UsersService {
     });
     return newUser.save();
   }
-
+  //find user by email
+  async findByEmail(email: string): Promise<User> {
+    return this.userModel.findOne({ email }).exec();
+  }
   // Update user details
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     try {

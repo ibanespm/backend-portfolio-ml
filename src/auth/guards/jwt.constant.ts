@@ -1,9 +1,4 @@
-import * as dotenv from 'dotenv';
-
-// Cargar las variables de entorno
-dotenv.config();
-
-console.log('JWT_SECRET_KEY:', process.env.JWT_SECRET_KEY);
 export const jwtConstants = {
-  secret: 'misecreto',
+  secret: process.env.SECRET_KEY,
+  signOptions: { expiresIn: '60h' },
 };

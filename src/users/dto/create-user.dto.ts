@@ -14,11 +14,6 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  password: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(100)
   name: string;
 
   @IsString()
@@ -27,13 +22,14 @@ export class CreateUserDto {
 
   @IsString()
   @IsOptional()
-  googleId?: string;
-
-  @IsString()
-  @IsOptional()
   provider?: string;
 
   @IsString()
   @IsOptional()
-  picture?: string;
+  avatarUrl?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  password: string;
 }

@@ -2,15 +2,15 @@ import {
   Controller,
   Post,
   Body,
-  UseGuards,
   Get,
+  UseGuards,
   Req,
   Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
-import { Response } from 'express';
+import { Public } from './decorators/public.decoratos';
 import { GoogleOAuthGuard } from './guards/google-oauth.guard';
 
 @Controller('auth')
@@ -28,22 +28,18 @@ export class AuthController {
   login(@Body() loginDto: LoginAuthDto) {
     return this.authService.login(loginDto);
   }
-  // 🟢 Login con Google
-  @Get('google')
-  @UseGuards(GoogleOAuthGuard)
-  async googleAuth() {
-    // El guard redirige a Google automáticamente
-  }
 
-  @Get('callback/google')
+  // 🟢 Login con Google
+  @Public()
   @UseGuards(GoogleOAuthGuard)
-  async googleAuthCallback(@Req() req, @Res() res: Response) {
-    try {
-      const token = await this.authService.oAuthLogin(req.user);
-      //  res.redirect(`${process.env.FRONTEND_URL}/oauth?token=${token.jwt}`);
-      res.redirect(`http://localhost:3000/oauth?token=${token.jwt}`);
-    } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
-    }
+  @Get('google/login')
+  googleLogin() {}
+
+  @Public()
+  @UseGuards(GoogleOAuthGuard)
+  @Get('google/callback')
+  async googleCallback(@Req() req, @Res() res) {
+    const response = await this.authService.login(req.user.id);
+    res.redirect(`http://localhost:3001?token=${response.access_token}`);
   }
 }
