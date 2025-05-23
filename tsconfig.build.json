@@ -3,7 +3,10 @@
   "compilerOptions": {
     "outDir": "./dist",
     "module": "commonjs",
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
 }
