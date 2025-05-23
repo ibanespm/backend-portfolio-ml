@@ -3,8 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateCommentDto } from './dto/create_comment_project.dto';
 // import { UpdateCommentDto } from './dto/update-comment-project.dto';
-import { Project, ProjectDocument } from 'src/projects/schemas/projects.schema';
-import { User, UserDocument } from 'src/users/schemas/users.schema';
+import { Project, ProjectDocument } from '../projects/schemas/projects.schema';
+import { User, UserDocument } from '../users/schemas/users.schema';
 import { CommentDocument } from './schemas/comment_project.schema';
 
 @Injectable()

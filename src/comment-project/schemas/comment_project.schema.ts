@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Project } from 'src/projects/schemas/projects.schema';
-import { User } from 'src/users/schemas/users.schema';
+import { Project } from 'projects/schemas/projects.schema';
+import { User } from 'users/schemas/users.schema';
 
 export type CommentDocument = Comment & Document;
 
