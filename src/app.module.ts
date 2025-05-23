@@ -23,7 +23,7 @@ dotenv.config();
     ProjectsModule,
     SearchModule,
     ContentModule,
-    MongooseModule.forRoot("mongodb://localhost:27017/tu_base_de_datos"),
+    MongooseModule.forRoot(process.env.MONGO_URI),
     CommentProjectModule,
   ],
   controllers: [AppController],
