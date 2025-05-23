@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "bun run --bun --target=node --module=commonjs node_modules/typescript/bin/tsc -p tsconfig.build.json --moduleResolution node --outDir ./dist --rootDir ./src --baseUrl ./src --paths {\"*\": [\"*\"]}",
+    "build": "bun run --bun --target=node --module=commonjs node_modules/typescript/bin/tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
