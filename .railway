@@ -1,0 +1,18 @@
+build:
+  use_docker: false
+  command: npm run build
+  env:
+    NODE_ENV: prod
+
+start:
+  command: NODE_ENV=prod node -r dotenv/config dist/main.js
+  env:
+    NODE_ENV: prod
+    PATH: $PATH:/app/node_modules/.bin
+
+env:
+  NODE_ENV: prod
+  PORT: 3000
+
+watch:
+  - src/**/*.ts
