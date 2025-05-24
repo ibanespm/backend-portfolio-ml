@@ -7,7 +7,7 @@ export class AppController {
   constructor(@InjectConnection() private connection: Connection) {}
 
   @Get('health')
-  async checkHealth() {
+  async getHello() {
     try {
       const state = this.connection.readyState;
       return {
